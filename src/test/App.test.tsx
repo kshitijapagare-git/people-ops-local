@@ -15,6 +15,7 @@ function renderApp() {
 }
 
 async function addDepartment(user: ReturnType<typeof userEvent.setup>, name: string, code: string) {
+  await user.click(screen.getByRole('button', { name: '+ Add department' }))
   const form = screen.getByRole('form', { name: 'Department form' })
   await user.type(within(form).getByLabelText('Name'), name)
   await user.type(within(form).getByLabelText('Code'), code)
@@ -22,6 +23,24 @@ async function addDepartment(user: ReturnType<typeof userEvent.setup>, name: str
 }
 
 describe('App', () => {
+  it('shows empty states and pagination', () => {
+    renderApp()
+    expect(screen.getByText('No departments yet.')).toBeInTheDocument()
+    expect(screen.getByText('Page 1')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled()
+  })
+
+  it('paginates departments ten per page', async () => {
+    const user = renderApp()
+    for (let i = 1; i <= 11; i++) await addDepartment(user, `Dept ${i}`, `D${i}`)
+    expect(screen.queryByRole('row', { name: /Dept 11/ })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Next page' }))
+    expect(screen.getByText('Page 2')).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /Dept 11/ })).toBeInTheDocument()
+  })
+
   it('adds, edits and deletes a department', async () => {
     const user = renderApp()
     await addDepartment(user, 'Engineering', 'ENG')
@@ -43,6 +62,7 @@ describe('App', () => {
     const user = renderApp()
     await addDepartment(user, 'Engineering', 'ENG')
     await user.click(screen.getByRole('button', { name: 'Employees' }))
+    await user.click(screen.getByRole('button', { name: '+ Add employee' }))
 
     await user.type(screen.getByLabelText('First name'), 'Jane')
     await user.type(screen.getByLabelText('Last name'), 'Doe')
@@ -59,6 +79,7 @@ describe('App', () => {
   it('shows an error when an employee has no department', async () => {
     const user = renderApp()
     await user.click(screen.getByRole('button', { name: 'Employees' }))
+    await user.click(screen.getByRole('button', { name: '+ Add employee' }))
     await user.type(screen.getByLabelText('First name'), 'Jane')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(screen.getByRole('alert')).toHaveTextContent('No department with id')

@@ -5,6 +5,7 @@ import { resetIds } from '../lib/id'
 
 beforeEach(() => {
   resetIds()
+  window.location.hash = ''
 })
 
 afterEach(() => {
