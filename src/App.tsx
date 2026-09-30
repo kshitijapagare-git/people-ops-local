@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
 import { DepartmentsPage } from './pages/DepartmentsPage'
 import { EmployeesPage } from './pages/EmployeesPage'
+import { RequisitionsPage } from './pages/RequisitionsPage'
 
-type View = 'departments' | 'employees'
+type View = 'departments' | 'employees' | 'requisitions'
 
 const navItems: { view: View; label: string; icon: string }[] = [
   { view: 'departments', label: 'Departments', icon: '🏢' },
   { view: 'employees', label: 'Employees', icon: '👤' },
+  { view: 'requisitions', label: 'Requisitions', icon: '📋' },
 ]
 
 function viewFromHash(): View {
-  return window.location.hash === '#/employees' ? 'employees' : 'departments'
+  if (window.location.hash === '#/employees') return 'employees'
+  if (window.location.hash === '#/requisitions') return 'requisitions'
+  return 'departments'
 }
 
 export function App() {
@@ -48,7 +52,11 @@ export function App() {
           ))}
         </nav>
       </aside>
-      <main className="content">{view === 'departments' ? <DepartmentsPage /> : <EmployeesPage />}</main>
+      <main className="content">
+        {view === 'departments' && <DepartmentsPage />}
+        {view === 'employees' && <EmployeesPage />}
+        {view === 'requisitions' && <RequisitionsPage />}
+      </main>
     </div>
   )
 }

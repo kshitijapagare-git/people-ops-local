@@ -237,6 +237,115 @@ button:disabled {
   color: var(--text-muted);
 }
 
+/* Rich text editor */
+
+.rich-text-editor {
+  min-height: 120px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text);
+}
+
+.rich-text-editor:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+
+/* Tree select */
+
+.tree-select {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.tree-select-children {
+  list-style: none;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tree-select-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 6px 10px;
+  text-align: left;
+  color: var(--text);
+}
+
+.tree-select-item:hover {
+  background: var(--sidebar-hover, rgba(0, 0, 0, 0.04));
+}
+
+.tree-select-item.selected {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Multi select */
+
+.multi-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.multi-select-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+/* Date range picker */
+
+.date-range-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.date-range-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.date-range-picker input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* Currency input */
+
+.currency-input input {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 100%;
+}
+
 /* Pagination */
 
 .pagination {

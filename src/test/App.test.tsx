@@ -76,6 +76,17 @@ describe('App', () => {
     expect(within(row).getByText('jane@example.com')).toBeInTheDocument()
   })
 
+  it('does not offer the seeded division as a selectable department', async () => {
+    const user = renderApp()
+    await addDepartment(user, 'Engineering', 'ENG')
+    await user.click(screen.getByRole('button', { name: 'Employees' }))
+    await user.click(screen.getByRole('button', { name: '+ Add employee' }))
+    const options = within(screen.getByLabelText('Department'))
+      .getAllByRole('option')
+      .map((option) => option.textContent)
+    expect(options).toEqual(['Select a department', 'Engineering'])
+  })
+
   it('shows an error when an employee has no department', async () => {
     const user = renderApp()
     await user.click(screen.getByRole('button', { name: 'Employees' }))
@@ -84,5 +95,12 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(screen.getByRole('alert')).toHaveTextContent('No department with id')
     expect(screen.queryByRole('row', { name: /Jane/ })).not.toBeInTheDocument()
+  })
+
+  it('navigates to Requisitions from the sidebar', async () => {
+    const user = renderApp()
+    await user.click(screen.getByRole('button', { name: 'Requisitions' }))
+    expect(screen.getByRole('heading', { name: 'Requisitions' })).toBeInTheDocument()
+    expect(screen.getByText('No requisitions yet.')).toBeInTheDocument()
   })
 })
