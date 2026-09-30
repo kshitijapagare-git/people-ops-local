@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react'
 import { DepartmentsPage } from './pages/DepartmentsPage'
 import { EmployeesPage } from './pages/EmployeesPage'
+import { EmploymentsPage } from './pages/EmploymentsPage'
+import { JobRolesPage } from './pages/JobRolesPage'
+import { LocationsPage } from './pages/LocationsPage'
 
-type View = 'departments' | 'employees'
+type View = 'departments' | 'employees' | 'jobRoles' | 'locations' | 'employments'
 
 const navItems: { view: View; label: string; icon: string }[] = [
   { view: 'departments', label: 'Departments', icon: '🏢' },
   { view: 'employees', label: 'Employees', icon: '👤' },
+  { view: 'jobRoles', label: 'Job roles', icon: '🧭' },
+  { view: 'locations', label: 'Locations', icon: '📍' },
+  { view: 'employments', label: 'Employments', icon: '📋' },
 ]
 
 function viewFromHash(): View {
-  return window.location.hash === '#/employees' ? 'employees' : 'departments'
+  const hash = window.location.hash
+  if (hash === '#/employees') return 'employees'
+  if (hash === '#/jobRoles') return 'jobRoles'
+  if (hash === '#/locations') return 'locations'
+  if (hash === '#/employments') return 'employments'
+  return 'departments'
 }
 
 export function App() {
@@ -48,7 +59,13 @@ export function App() {
           ))}
         </nav>
       </aside>
-      <main className="content">{view === 'departments' ? <DepartmentsPage /> : <EmployeesPage />}</main>
+      <main className="content">
+        {view === 'departments' && <DepartmentsPage />}
+        {view === 'employees' && <EmployeesPage />}
+        {view === 'jobRoles' && <JobRolesPage />}
+        {view === 'locations' && <LocationsPage />}
+        {view === 'employments' && <EmploymentsPage />}
+      </main>
     </div>
   )
 }

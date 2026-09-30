@@ -237,6 +237,139 @@ button:disabled {
   color: var(--text-muted);
 }
 
+/* Stepper */
+
+.stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepper-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.stepper-btn:disabled {
+  color: #d1d5db;
+  cursor: default;
+}
+
+.stepper-value {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 400;
+  color: var(--text);
+}
+
+/* Slider */
+
+.slider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.slider-input {
+  width: 100%;
+}
+
+.slider-readout {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.slider-disabled,
+.slider[disabled] {
+  opacity: 0.5;
+}
+
+.slider-disabled .slider-input {
+  opacity: 0.6;
+}
+
+/* Toggle group */
+
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.toggle-group-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toggle-btn {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.toggle-btn.toggle-active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Rating */
+
+.rating {
+  display: flex;
+  gap: 4px;
+}
+
+.star-btn {
+  border: 0;
+  background: none;
+  font-size: 1.2rem;
+  color: #d1d5db;
+  padding: 0;
+}
+
+.star-btn.star-filled {
+  color: #f59e0b;
+}
+
+.rating.disabled,
+.rating[disabled] {
+  opacity: 0.5;
+}
+
+.rating.disabled .star-btn {
+  cursor: default;
+}
+
 /* Pagination */
 
 .pagination {
