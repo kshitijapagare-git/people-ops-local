@@ -1,10 +1,21 @@
 import { nextId } from '../lib/id'
-import type { Department, DepartmentDraft, Employee, EmployeeDraft } from '../types'
+import type {
+  Department,
+  DepartmentDraft,
+  Employee,
+  EmployeeDraft,
+  JobRole,
+  JobRoleDraft,
+  Location,
+  LocationDraft,
+} from '../types'
 import * as repo from './repository'
 
 export interface PeopleOpsState {
   departments: repo.Table<Department>
   employees: repo.Table<Employee>
+  jobRoles: repo.Table<JobRole>
+  locations: repo.Table<Location>
 }
 
 export class StoreError extends Error {
@@ -15,7 +26,7 @@ export class StoreError extends Error {
 }
 
 export function emptyState(): PeopleOpsState {
-  return { departments: [], employees: [] }
+  return { departments: [], employees: [], jobRoles: [], locations: [] }
 }
 
 /* ---------- Departments ---------- */
@@ -78,6 +89,70 @@ export function deleteEmployee(state: PeopleOpsState, id: string): PeopleOpsStat
   return { ...state, employees: repo.remove(state.employees, id) }
 }
 
+/* ---------- Job roles ---------- */
+
+export function listJobRoles(state: PeopleOpsState): JobRole[] {
+  return repo.list(state.jobRoles)
+}
+
+export function getJobRole(state: PeopleOpsState, id: string): JobRole | undefined {
+  return repo.get(state.jobRoles, id)
+}
+
+export function createJobRole(state: PeopleOpsState, draft: JobRoleDraft): PeopleOpsState {
+  requireValidBaseSalary(draft.baseSalary)
+  requireUniqueJobRoleTitle(state, draft.title, draft.level)
+  const jobRole: JobRole = { id: nextId('role'), ...draft }
+  return { ...state, jobRoles: repo.insert(state.jobRoles, jobRole) }
+}
+
+export function updateJobRole(
+  state: PeopleOpsState,
+  id: string,
+  patch: Partial<JobRoleDraft>,
+): PeopleOpsState {
+  const existing = requireJobRole(state, id)
+  if (patch.baseSalary !== undefined) requireValidBaseSalary(patch.baseSalary)
+  const title = patch.title !== undefined ? patch.title : existing.title
+  const level = patch.level !== undefined ? patch.level : existing.level
+  requireUniqueJobRoleTitle(state, title, level, id)
+  return { ...state, jobRoles: repo.replace(state.jobRoles, id, patch) }
+}
+
+export function deleteJobRole(state: PeopleOpsState, id: string): PeopleOpsState {
+  requireJobRole(state, id)
+  return { ...state, jobRoles: repo.remove(state.jobRoles, id) }
+}
+
+/* ---------- Locations ---------- */
+
+export function listLocations(state: PeopleOpsState): Location[] {
+  return repo.list(state.locations)
+}
+
+export function getLocation(state: PeopleOpsState, id: string): Location | undefined {
+  return repo.get(state.locations, id)
+}
+
+export function createLocation(state: PeopleOpsState, draft: LocationDraft): PeopleOpsState {
+  const location: Location = { id: nextId('loc'), ...draft }
+  return { ...state, locations: repo.insert(state.locations, location) }
+}
+
+export function updateLocation(
+  state: PeopleOpsState,
+  id: string,
+  patch: Partial<LocationDraft>,
+): PeopleOpsState {
+  requireLocation(state, id)
+  return { ...state, locations: repo.replace(state.locations, id, patch) }
+}
+
+export function deleteLocation(state: PeopleOpsState, id: string): PeopleOpsState {
+  requireLocation(state, id)
+  return { ...state, locations: repo.remove(state.locations, id) }
+}
+
 /* ---------- FK guards ---------- */
 
 function requireDepartment(state: PeopleOpsState, id: string): Department {
@@ -90,4 +165,38 @@ function requireEmployee(state: PeopleOpsState, id: string): Employee {
   const employee = repo.get(state.employees, id)
   if (!employee) throw new StoreError(`No employee with id ${id}`)
   return employee
+}
+
+function requireJobRole(state: PeopleOpsState, id: string): JobRole {
+  const jobRole = repo.get(state.jobRoles, id)
+  if (!jobRole) throw new StoreError(`No job role with id ${id}`)
+  return jobRole
+}
+
+function requireLocation(state: PeopleOpsState, id: string): Location {
+  const location = repo.get(state.locations, id)
+  if (!location) throw new StoreError(`No location with id ${id}`)
+  return location
+}
+
+/* ---------- Validation ---------- */
+
+function requireValidBaseSalary(baseSalary: number): void {
+  if (baseSalary <= 0) throw new StoreError('Base salary must be greater than zero')
+}
+
+function requireUniqueJobRoleTitle(
+  state: PeopleOpsState,
+  title: string,
+  level: JobRole['level'],
+  excludeId?: string,
+): void {
+  const normalized = title.trim().toLowerCase()
+  const duplicate = state.jobRoles.find(
+    (jobRole) =>
+      jobRole.id !== excludeId &&
+      jobRole.level === level &&
+      jobRole.title.trim().toLowerCase() === normalized,
+  )
+  if (duplicate) throw new StoreError(`A job role titled "${title.trim()}" already exists for level ${level}`)
 }
